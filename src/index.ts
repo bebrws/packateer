@@ -42,27 +42,34 @@ export default async function TestReactJS({portToListenOn = undefined, serverLis
         module: {
             rules: [{
                 test: /\.ts$/,
-                loader: 'ts-loader',
-                options: {
-                presets: [
-                    '@babel/preset-env', ['@babel/preset-react', {  "runtime": "automatic" }]
-                ],
-                plugins: [
-                    '@babel/plugin-syntax-jsx'
-                ]
-                }
+                use: [{ loader: 'babel-loader',
+                    options: {presets: [
+                        '@babel/preset-env', '@babel/preset-react'
+                    ],
+                    plugins: [
+                        '@babel/plugin-syntax-jsx'
+                    ]
+                    }}, {loader: 'ts-loader', options: {
+                        compilerOptions: {
+                            noEmit: false
+                        }
+                    }}],
             },
             {
                 test: /\.tsx$/,
-                loader: 'ts-loader',
-                options: {
-                presets: [
-                    '@babel/preset-env', ['@babel/preset-react', {  "runtime": "automatic" }]
+                use: [{ loader: 'babel-loader',
+                options: {presets: [
+                    '@babel/preset-env', '@babel/preset-react'
                 ],
                 plugins: [
                     '@babel/plugin-syntax-jsx'
                 ]
-                }
+                }}, {loader: 'ts-loader', options: {
+                    compilerOptions: {
+                        noEmit: false
+                    }
+                }}],
+                
             },
             {
                 test: /\.js$/,
