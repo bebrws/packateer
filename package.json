@@ -1,0 +1,24 @@
+{
+  "name": "packateer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "html-webpack-plugin": "^4.5.0",
+    "puppeteer": "^5.4.1",
+    "ts-loader": "^8.0.11",
+    "webpack": "^5.4.0",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "devDependencies": {
+    "@types/puppeteer": "^5.4.0",
+    "@types/webpack-dev-server": "^3.11.1"
+  }
+}
