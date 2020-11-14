@@ -9,6 +9,12 @@ You are then provided the pupeteer and webpack dev server variables to test to y
 This is useful when you need to test interaction with React components that cannot be tested with available
 virtual DOM options. One such example is shown below, testing tabIndex.
 
+# Why is this useful?
+
+Say you have a or a few React components that you need to test some user interaction with. Say Drag-n-drop or tab ordering. Then this is a library you may want to give a look.
+
+It allows you to craft a new tsx or jsx file with these components in whichever way you want and then use puppeteer to (and whichever test tool, say Jest) you want to test away.
+
 # Example Usage
 
 ### App.spec.js
