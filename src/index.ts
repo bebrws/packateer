@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import Webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack from 'webpack';
 
 interface TestReactJSArguments {
     portToListenOn?: number;
@@ -24,7 +25,7 @@ interface TestReactJSReturn {
 
 export default async function TestReactJS({portToListenOn = undefined, serverListeningCallback = undefined, browserIsHeadless = true, entry = undefined}: TestReactJSArguments): Promise<TestReactJSReturn> {
     const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-        template: './client/index.html',
+        template: path.join(__dirname, '../client/index.html'),
         filename: 'index.html',
         inject: 'body'
         })
@@ -42,6 +43,7 @@ export default async function TestReactJS({portToListenOn = undefined, serverLis
         module: {
             rules: [{
                 test: /\.ts$/,
+                resolve: { fullySpecified: false },
                 use: [{ loader: 'babel-loader',
                     options: {presets: [
                         '@babel/preset-env', '@babel/preset-react'
@@ -51,12 +53,18 @@ export default async function TestReactJS({portToListenOn = undefined, serverLis
                     ]
                     }}, {loader: 'ts-loader', options: {
                         compilerOptions: {
-                            noEmit: false
-                        }
+                            "target": "es5",
+                            "module": "commonjs",
+                            "jsx": "react",
+                            "esModuleInterop": true,
+                            "skipLibCheck": true,
+                            "noEmit": false
+                          }
                     }}],
             },
             {
                 test: /\.tsx$/,
+                resolve: { fullySpecified: false },
                 use: [{ loader: 'babel-loader',
                 options: {presets: [
                     '@babel/preset-env', '@babel/preset-react'
@@ -66,13 +74,19 @@ export default async function TestReactJS({portToListenOn = undefined, serverLis
                 ]
                 }}, {loader: 'ts-loader', options: {
                     compilerOptions: {
-                        noEmit: false
-                    }
+                        "target": "es5",
+                        "module": "commonjs",
+                        "jsx": "react",
+                        "esModuleInterop": true,
+                        "skipLibCheck": true,
+                        "noEmit": false
+                      }
                 }}],
                 
             },
             {
                 test: /\.js$/,
+                resolve: { fullySpecified: false },
                 loader: 'babel-loader',
                 options: {
                 presets: [
@@ -85,6 +99,7 @@ export default async function TestReactJS({portToListenOn = undefined, serverLis
             },
             {
                 test: /\.jsx$/,
+                resolve: { fullySpecified: false },
                 loader: 'babel-loader',
                 options: {
                 presets: [
@@ -108,10 +123,15 @@ export default async function TestReactJS({portToListenOn = undefined, serverLis
             }
             ]
         },
-        plugins: [HtmlWebpackPluginConfig]
+        resolve: {
+            // fullySpecified: false,
+            extensions: ['.wasm', '.mjs', '.json', '.tsx', '.ts', '.js', '.jsx'],
+            modules: [path.join(__dirname, '../../../node_modules'), path.join(__dirname, '../../../src'), path.join(__dirname, '../../../')]
+        },
+        plugins: [HtmlWebpackPluginConfig],
         })
         
-        const server = new WebpackDevServer(compiler, {
+        const server = new WebpackDevServer(compiler as any, {
         stats: {
             colors: true
         }

@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,6 +59,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var puppeteer_1 = __importDefault(require("puppeteer"));
+var path = __importStar(require("path"));
 var webpack_1 = __importDefault(require("webpack"));
 var webpack_dev_server_1 = __importDefault(require("webpack-dev-server"));
 var html_webpack_plugin_1 = __importDefault(require("html-webpack-plugin"));
@@ -79,7 +99,7 @@ function TestReactJS(_a) {
             switch (_f.label) {
                 case 0:
                     HtmlWebpackPluginConfig = new html_webpack_plugin_1.default({
-                        template: './client/index.html',
+                        template: path.join(__dirname, '../client/index.html'),
                         filename: 'index.html',
                         inject: 'body'
                     });
@@ -96,6 +116,7 @@ function TestReactJS(_a) {
                         module: {
                             rules: [{
                                     test: /\.ts$/,
+                                    resolve: { fullySpecified: false },
                                     use: [{ loader: 'babel-loader',
                                             options: { presets: [
                                                     '@babel/preset-env', '@babel/preset-react'
@@ -105,12 +126,18 @@ function TestReactJS(_a) {
                                                 ]
                                             } }, { loader: 'ts-loader', options: {
                                                 compilerOptions: {
-                                                    noEmit: false
+                                                    "target": "es5",
+                                                    "module": "commonjs",
+                                                    "jsx": "react",
+                                                    "esModuleInterop": true,
+                                                    "skipLibCheck": true,
+                                                    "noEmit": false
                                                 }
                                             } }],
                                 },
                                 {
                                     test: /\.tsx$/,
+                                    resolve: { fullySpecified: false },
                                     use: [{ loader: 'babel-loader',
                                             options: { presets: [
                                                     '@babel/preset-env', '@babel/preset-react'
@@ -120,12 +147,18 @@ function TestReactJS(_a) {
                                                 ]
                                             } }, { loader: 'ts-loader', options: {
                                                 compilerOptions: {
-                                                    noEmit: false
+                                                    "target": "es5",
+                                                    "module": "commonjs",
+                                                    "jsx": "react",
+                                                    "esModuleInterop": true,
+                                                    "skipLibCheck": true,
+                                                    "noEmit": false
                                                 }
                                             } }],
                                 },
                                 {
                                     test: /\.js$/,
+                                    resolve: { fullySpecified: false },
                                     loader: 'babel-loader',
                                     options: {
                                         presets: [
@@ -138,6 +171,7 @@ function TestReactJS(_a) {
                                 },
                                 {
                                     test: /\.jsx$/,
+                                    resolve: { fullySpecified: false },
                                     loader: 'babel-loader',
                                     options: {
                                         presets: [
@@ -161,7 +195,12 @@ function TestReactJS(_a) {
                                 }
                             ]
                         },
-                        plugins: [HtmlWebpackPluginConfig]
+                        resolve: {
+                            // fullySpecified: false,
+                            extensions: ['.wasm', '.mjs', '.json', '.tsx', '.ts', '.js', '.jsx'],
+                            modules: [path.join(__dirname, '../../../node_modules'), path.join(__dirname, '../../../src'), path.join(__dirname, '../../../')]
+                        },
+                        plugins: [HtmlWebpackPluginConfig],
                     });
                     server = new webpack_dev_server_1.default(compiler, {
                         stats: {
