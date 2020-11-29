@@ -1,18 +1,11 @@
 import puppeteer from 'puppeteer';
 import WebpackDevServer from 'webpack-dev-server';
-interface TestReactJSArguments {
-    portToListenOn?: number;
-    serverListeningCallback?: () => void;
-    browserIsHeadless?: boolean;
-    entry?: string;
-}
-interface TestReactJSReturn {
-    serverSetup: () => Promise<void>;
+interface ServerAndPupeteerObject {
     port: number;
-    server: WebpackDevServer;
-    browser: puppeteer.Browser;
-    page: puppeteer.Page;
+    server: WebpackDevServer | null;
+    browser: puppeteer.Browser | null;
+    page: puppeteer.Page | null;
 }
-export default function TestReactJS({ portToListenOn, serverListeningCallback, browserIsHeadless, entry }: TestReactJSArguments): Promise<TestReactJSReturn>;
+export declare function CreateServerAndClient(portToListenOn?: undefined, serverListeningCallback?: undefined, browserIsHeadless?: boolean, entry?: undefined, modules?: string[], fullySpecifiedImports?: boolean, usingTypescript?: boolean): Promise<ServerAndPupeteerObject>;
 export {};
 //# sourceMappingURL=index.d.ts.map

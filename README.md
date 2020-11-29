@@ -17,22 +17,15 @@ It allows you to craft a new tsx or jsx file with these components in whichever 
 
 # Example Usage
 
-### App.spec.js
+### App.test.js
 
 ```
-import TestReactJS from 'packateer';
-
+import { CreateServerAndClient } from 'packateer';
 import * as path from 'path';
+import * as util from 'util';
 
-jest.setTimeout(500000)
+jest.setTimeout(50000); 
 
-async function delay(delayTime) {
-  await new Promise((res, rej) => {
-    setTimeout(() => {
-      res(true)
-    }, delayTime)
-  });
-}
 
 function findFocusedNodes(node) {
   if (node.focused) {
@@ -45,53 +38,59 @@ function findFocusedNodes(node) {
   }
 }
 
+async function delay(delayTime) {
+  await new Promise((res, rej) => {
+    setTimeout(() => {
+      res(true)
+    }, delayTime)
+  });
+}
 
-let [ppage, pserver] = [undefined, undefined];
+let [ppage, pserver, pbrowser] = [undefined, undefined, undefined];
 
 describe('test with pup', () => {
   beforeAll(async () => {
-
-    const {serverSetup, port, server, browser, page} = await TestReactJS({browserIsHeadless: false, entry: path.join(__dirname, '/puptest.subpage.jsx')});
-    ppage = page;
+    const { port, server, browser, page } = await CreateServerAndClient(undefined, undefined, false, path.join(__dirname, 'App.subpage.jsx'), [path.join(__dirname, '../node_modules')]);
     pserver = server;
-
-    await serverSetup();
+    ppage = page;
+    pbrowser = browser;
+    
   })
-
+  
   afterAll(() => {
+    pbrowser.close();
     pserver.close();
   })
 
-
   test('renders learn react link', async () => {
-      await ppage.waitForSelector('#initial');
+    await ppage.waitForSelector('#initial');
 
-      await ppage.focus("#initial");
-      await delay(500);
-      let snapNode = await ppage.accessibility.snapshot();
-      let inFocus = findFocusedNodes(snapNode);
-      expect(inFocus.length).toEqual(1);
-      expect(inFocus[0].name).toEqual("initial");
+    await ppage.focus("#initial");
+    await delay(500);
+    let snapNode = await ppage.accessibility.snapshot();
+    let inFocus = findFocusedNodes(snapNode);
+    expect(inFocus.length).toEqual(1);
+    expect(inFocus[0].name).toEqual("initial");
 
-      ppage.keyboard.press('Tab');
-      await delay(500);
-      snapNode = await ppage.accessibility.snapshot();
-      inFocus = findFocusedNodes(snapNode);
-      expect(inFocus.length).toEqual(1);
-      expect(inFocus[0].name).toEqual("First");
+    ppage.keyboard.press('Tab');
+    await delay(500);
+    snapNode = await ppage.accessibility.snapshot();
+    inFocus = findFocusedNodes(snapNode);
+    expect(inFocus.length).toEqual(1);
+    expect(inFocus[0].name).toEqual("First");
 
-      ppage.keyboard.press('Tab');
-      await delay(500);
-      snapNode = await ppage.accessibility.snapshot();
-      inFocus = findFocusedNodes(snapNode);
-      expect(inFocus.length).toEqual(1);
-      expect(inFocus[0].name).toEqual("Second");
+    ppage.keyboard.press('Tab');
+    await delay(500);
+    snapNode = await ppage.accessibility.snapshot();
+    inFocus = findFocusedNodes(snapNode);
+    expect(inFocus.length).toEqual(1);
+    expect(inFocus[0].name).toEqual("Second");
   });
 
-})
+});
 ```
 
-### puptest.subpage.jsx
+### App.subpage.jsx
 
 ```
 import React from 'react';
@@ -100,11 +99,47 @@ import './index.css';
 import App from './App';
 
 ReactDOM.render(
-    <>
-        <App />
-    </>
+    <App />
   ,
   document.getElementById('root')
 );
+```
+
+
+### App.js
 
 ```
+// import React from 'react'
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <>
+    <div id="initial" tabIndex="0">initial</div>
+    <div id="First" tabIndex="0">First</div>
+    <div id="Second" tabIndex="0">Second</div>
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Hey, this is a test.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+    </>
+  );
+}
+
+export default App;
+```
+
+I will include this test project in the test folder of this package to show how this can be used.

@@ -54,56 +54,104 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CreateServerAndClient = void 0;
 var puppeteer_1 = __importDefault(require("puppeteer"));
 var path = __importStar(require("path"));
+var fs = __importStar(require("fs"));
 var webpack_1 = __importDefault(require("webpack"));
 var webpack_dev_server_1 = __importDefault(require("webpack-dev-server"));
 var html_webpack_plugin_1 = __importDefault(require("html-webpack-plugin"));
-function TestReactJS(_a) {
-    var _b = _a.portToListenOn, portToListenOn = _b === void 0 ? undefined : _b, _c = _a.serverListeningCallback, serverListeningCallback = _c === void 0 ? undefined : _c, _d = _a.browserIsHeadless, browserIsHeadless = _d === void 0 ? true : _d, _e = _a.entry, entry = _e === void 0 ? undefined : _e;
+function CreateServerAndClient(portToListenOn, serverListeningCallback, browserIsHeadless, entry, modules, fullySpecifiedImports, usingTypescript) {
+    if (portToListenOn === void 0) { portToListenOn = undefined; }
+    if (serverListeningCallback === void 0) { serverListeningCallback = undefined; }
+    if (browserIsHeadless === void 0) { browserIsHeadless = true; }
+    if (entry === void 0) { entry = undefined; }
+    if (modules === void 0) { modules = [path.join(__dirname, '../../../node_modules')]; }
+    if (fullySpecifiedImports === void 0) { fullySpecifiedImports = false; }
+    if (usingTypescript === void 0) { usingTypescript = false; }
     return __awaiter(this, void 0, void 0, function () {
-        function serverSetup() {
-            return __awaiter(this, void 0, void 0, function () {
-                var _this = this;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: 
-                        // server.listen(port, "localhost", serverListeningCallback || (() => {}));
-                        return [4 /*yield*/, new Promise(function (res, rej) {
-                                server.listen(port, "localhost", serverListeningCallback || (function () { return __awaiter(_this, void 0, void 0, function () {
-                                    return __generator(this, function (_a) {
-                                        switch (_a.label) {
-                                            case 0: return [4 /*yield*/, page.goto("http://localhost:" + port)];
-                                            case 1:
-                                                _a.sent();
-                                                res(true);
-                                                return [2 /*return*/];
-                                        }
-                                    });
-                                }); }));
-                            })];
-                        case 1:
-                            // server.listen(port, "localhost", serverListeningCallback || (() => {}));
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        }
-        var HtmlWebpackPluginConfig, compiler, server, port, browser, page;
-        return __generator(this, function (_f) {
-            switch (_f.label) {
+        var port, HtmlWebpackPluginConfig, typescriptModuleRules, compiler_1, server_1, page, browser, e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
+                    port = portToListenOn || 3000 + Math.floor(Math.random() * Math.floor(1000));
+                    if (!modules.some(function (m) { return !fs.existsSync(m); })) return [3 /*break*/, 1];
+                    throw new Error("The modules property contains a path which does not exist. This may happen if for exammple this package is npm linked and the modules array is not updated.");
+                case 1:
+                    if (!!entry) return [3 /*break*/, 2];
+                    throw new Error("Please provide a file to be used as the entry point for the test. This may be a file containing a call to ReactDom.render.");
+                case 2:
                     HtmlWebpackPluginConfig = new html_webpack_plugin_1.default({
                         template: path.join(__dirname, '../client/index.html'),
                         filename: 'index.html',
                         inject: 'body'
                     });
-                    compiler = webpack_1.default({
+                    typescriptModuleRules = [
+                        {
+                            test: /\.ts$/,
+                            resolve: { fullySpecified: false },
+                            use: [
+                                {
+                                    loader: 'babel-loader',
+                                    options: {
+                                        presets: ['@babel/preset-env', '@babel/preset-react'],
+                                        plugins: ['@babel/plugin-syntax-jsx']
+                                    }
+                                },
+                                {
+                                    loader: 'ts-loader',
+                                    options: {
+                                        compilerOptions: {
+                                            target: 'es5',
+                                            module: 'commonjs',
+                                            jsx: 'react',
+                                            esModuleInterop: true,
+                                            skipLibCheck: true,
+                                            noEmit: false
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            test: /\.tsx$/,
+                            resolve: { fullySpecified: false },
+                            use: [
+                                {
+                                    loader: 'babel-loader',
+                                    options: {
+                                        presets: ['@babel/preset-env', '@babel/preset-react'],
+                                        plugins: ['@babel/plugin-syntax-jsx']
+                                    }
+                                },
+                                {
+                                    loader: 'ts-loader',
+                                    options: {
+                                        compilerOptions: {
+                                            target: 'es5',
+                                            module: 'commonjs',
+                                            jsx: 'react',
+                                            esModuleInterop: true,
+                                            skipLibCheck: true,
+                                            noEmit: false
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ];
+                    compiler_1 = webpack_1.default({
                         name: 'test',
                         target: 'web',
                         mode: 'development',
@@ -114,59 +162,14 @@ function TestReactJS(_a) {
                             publicPath: '/'
                         },
                         module: {
-                            rules: [{
-                                    test: /\.ts$/,
-                                    resolve: { fullySpecified: false },
-                                    use: [{ loader: 'babel-loader',
-                                            options: { presets: [
-                                                    '@babel/preset-env', '@babel/preset-react'
-                                                ],
-                                                plugins: [
-                                                    '@babel/plugin-syntax-jsx'
-                                                ]
-                                            } }, { loader: 'ts-loader', options: {
-                                                compilerOptions: {
-                                                    "target": "es5",
-                                                    "module": "commonjs",
-                                                    "jsx": "react",
-                                                    "esModuleInterop": true,
-                                                    "skipLibCheck": true,
-                                                    "noEmit": false
-                                                }
-                                            } }],
-                                },
-                                {
-                                    test: /\.tsx$/,
-                                    resolve: { fullySpecified: false },
-                                    use: [{ loader: 'babel-loader',
-                                            options: { presets: [
-                                                    '@babel/preset-env', '@babel/preset-react'
-                                                ],
-                                                plugins: [
-                                                    '@babel/plugin-syntax-jsx'
-                                                ]
-                                            } }, { loader: 'ts-loader', options: {
-                                                compilerOptions: {
-                                                    "target": "es5",
-                                                    "module": "commonjs",
-                                                    "jsx": "react",
-                                                    "esModuleInterop": true,
-                                                    "skipLibCheck": true,
-                                                    "noEmit": false
-                                                }
-                                            } }],
-                                },
+                            rules: __spreadArrays((usingTypescript ? typescriptModuleRules : []), [
                                 {
                                     test: /\.js$/,
                                     resolve: { fullySpecified: false },
                                     loader: 'babel-loader',
                                     options: {
-                                        presets: [
-                                            '@babel/preset-env', ['@babel/preset-react', { "runtime": "automatic" }]
-                                        ],
-                                        plugins: [
-                                            '@babel/plugin-syntax-jsx'
-                                        ]
+                                        presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic' }]],
+                                        plugins: ['@babel/plugin-syntax-jsx']
                                     }
                                 },
                                 {
@@ -174,12 +177,8 @@ function TestReactJS(_a) {
                                     resolve: { fullySpecified: false },
                                     loader: 'babel-loader',
                                     options: {
-                                        presets: [
-                                            '@babel/preset-env', ['@babel/preset-react', { "runtime": "automatic" }]
-                                        ],
-                                        plugins: [
-                                            '@babel/plugin-syntax-jsx'
-                                        ]
+                                        presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic' }]],
+                                        plugins: ['@babel/plugin-syntax-jsx']
                                     }
                                 },
                                 {
@@ -188,36 +187,62 @@ function TestReactJS(_a) {
                                 },
                                 {
                                     test: /\.(ttf|woff|woff2|eot|svg)$/,
-                                    use: [{
+                                    use: [
+                                        {
                                             loader: 'file-loader',
                                             options: {}
-                                        }]
+                                        }
+                                    ]
                                 }
-                            ]
+                            ])
                         },
                         resolve: {
-                            // fullySpecified: false,
-                            extensions: ['.wasm', '.mjs', '.json', '.tsx', '.ts', '.js', '.jsx'],
-                            modules: [path.join(__dirname, '../../../node_modules'), path.join(__dirname, '../../../src'), path.join(__dirname, '../../../')]
+                            modules: modules
                         },
-                        plugins: [HtmlWebpackPluginConfig],
+                        plugins: [HtmlWebpackPluginConfig]
                     });
-                    server = new webpack_dev_server_1.default(compiler, {
-                        stats: {
-                            colors: true
-                        }
-                    });
-                    port = portToListenOn || (3000 + Math.floor(Math.random() * Math.floor(1000)));
+                    server_1 = null;
+                    return [4 /*yield*/, new Promise(function (res, rej) {
+                            server_1 = new webpack_dev_server_1.default(compiler_1, {
+                                onListening: function (server) {
+                                    res(null);
+                                },
+                                stats: {
+                                    colors: true
+                                }
+                            });
+                            server_1.listen(port, 'localhost', function (error) {
+                                if (error) {
+                                    console.error("Error occurred with WebPack server listening on port " + port + ".");
+                                    throw error;
+                                }
+                            });
+                        })];
+                case 3:
+                    _a.sent();
+                    page = null;
                     return [4 /*yield*/, puppeteer_1.default.launch({ headless: Boolean(browserIsHeadless) })];
-                case 1:
-                    browser = _f.sent();
+                case 4:
+                    browser = _a.sent();
+                    if (!browser) return [3 /*break*/, 9];
                     return [4 /*yield*/, browser.newPage()];
-                case 2:
-                    page = _f.sent();
-                    return [2 /*return*/, { serverSetup: serverSetup, port: port, server: server, browser: browser, page: page }];
+                case 5:
+                    page = _a.sent();
+                    _a.label = 6;
+                case 6:
+                    _a.trys.push([6, 8, , 9]);
+                    return [4 /*yield*/, page.goto("http://localhost:" + port)];
+                case 7:
+                    _a.sent();
+                    return [3 /*break*/, 9];
+                case 8:
+                    e_1 = _a.sent();
+                    console.error("Unable to use Puppetter page to goto URL for WebPackServer.");
+                    throw e_1;
+                case 9: return [2 /*return*/, { port: port, server: server_1, browser: browser, page: page }];
             }
         });
     });
 }
-exports.default = TestReactJS;
+exports.CreateServerAndClient = CreateServerAndClient;
 //# sourceMappingURL=index.js.map
