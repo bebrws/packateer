@@ -1,3 +1,6 @@
+# Packateer
+![Packateer](packateerLogo.svg "Packateer Logo")
+
 # What is this?
 
 This is a library which will take a filename (the entry argument), use webpack to compile that JSX file into a website.
