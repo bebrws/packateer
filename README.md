@@ -18,6 +18,20 @@ Say you have a or a few React components that you need to test some user interac
 
 It allows you to craft a new tsx or jsx file with these components in whichever way you want and then use puppeteer to (and whichever test tool, say Jest) you want to test away.
 
+# Example
+You can check the example_usage folder for an Example or click here [to see a full example in the README](#example-usage)
+
+# Exaplin the Example
+You can take a component: [App.js For example](#appjs)
+
+Create a file where you get to [layout one or more](#appsubpagejsx) (as many components as you want!). The point of this package is to allow you to create these "pages" or "subsections of sites" that contain components you want to test and only those components. Why write a test that has to login and navigate around your site just to test a specific component when you couuld layout a few components in a new page and test only those components?
+
+In the example below I am testing that pressing tab while viewing the page will traverse the HTML DIV elements as expected. The test starts by selecting the DIV with the id "initial". Then tabs down the DIV with the id "second".
+
+This is an example of testing where I found virtual doms to fall short. Also, if time is not an issue with testing woudln't it be just that much better to test in a real browser?
+
+If you have headless set to false then you can see the browser tab between DIVs in the example:
+![Packateer Example Video](packateer.gif "Packateer Example Video")
 # Example Usage
 
 ### App.test.js
