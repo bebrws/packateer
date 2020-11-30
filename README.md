@@ -1,5 +1,5 @@
 # Packateer
-![Packateer](packateerLogo.svg "Packateer Logo")
+![Packateer](https://raw.githubusercontent.com/bebrws/packateer/master/packateerLogo.svg "Packateer Logo")
 
 # What is this?
 
@@ -31,7 +31,7 @@ In the example below I am testing that pressing tab while viewing the page will 
 This is an example of testing where I found virtual doms to fall short. Also, if time is not an issue with testing woudln't it be just that much better to test in a real browser?
 
 If you have headless set to false then you can see the browser tab between DIVs in the example:
-![Packateer Example Video](packateer.gif "Packateer Example Video")
+![Packateer Example Video](https://github.com/bebrws/packateer/raw/master/packateer.gif "Packateer Example Video")
 # Example Usage
 
 ### App.test.js
