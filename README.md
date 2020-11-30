@@ -1,5 +1,5 @@
 # Packateer
-![Packateer](packateerLogo.svg "Packateer Logo")
+![Packateer](packateerLogo.svg=400x "Packateer Logo")
 
 # What is this?
 
