@@ -44,7 +44,6 @@ interface ServerAndPupeteerObject {
 
 export async function CreateServerAndClient(
 	portToListenOn = undefined,
-	serverListeningCallback = undefined,
 	browserIsHeadless = true,
 	entry = undefined,
 	modules = [ path.join(__dirname, '../../../node_modules') ],
@@ -80,7 +79,7 @@ export async function CreateServerAndClient(
 		const typescriptModuleRules = [
 			{
 				test: /\.ts$/,
-				resolve: { fullySpecified: false },
+				resolve: { fullySpecified: fullySpecifiedImports },
 				use: [
 					{
 						loader: 'babel-loader',
@@ -106,7 +105,7 @@ export async function CreateServerAndClient(
 			},
 			{
 				test: /\.tsx$/,
-				resolve: { fullySpecified: false },
+				resolve: { fullySpecified: fullySpecifiedImports },
 				use: [
 					{
 						loader: 'babel-loader',
@@ -147,7 +146,7 @@ export async function CreateServerAndClient(
 					...(usingTypescript ? typescriptModuleRules : []),
 					{
 						test: /\.js$/,
-						resolve: { fullySpecified: false },
+						resolve: { fullySpecified: fullySpecifiedImports },
 						loader: 'babel-loader',
 						options: {
 							presets: [ '@babel/preset-env', [ '@babel/preset-react', { runtime: 'automatic' } ] ],
@@ -156,7 +155,7 @@ export async function CreateServerAndClient(
 					},
 					{
 						test: /\.jsx$/,
-						resolve: { fullySpecified: false },
+						resolve: { fullySpecified: fullySpecifiedImports },
 						loader: 'babel-loader',
 						options: {
 							presets: [ '@babel/preset-env', [ '@babel/preset-react', { runtime: 'automatic' } ] ],

@@ -63,7 +63,7 @@ let [ppage, pserver, pbrowser] = [undefined, undefined, undefined];
 
 describe('test with pup', () => {
   beforeAll(async () => {
-    const { port, server, browser, page } = await CreateServerAndClient(undefined, undefined, false, path.join(__dirname, 'App.subpage.jsx'), [path.join(__dirname, '../node_modules')]);
+    const { port, server, browser, page } = await CreateServerAndClient(undefined, false, path.join(__dirname, 'App.subpage.jsx'), [path.join(__dirname, '../node_modules')]);
     pserver = server;
     ppage = page;
     pbrowser = browser;
