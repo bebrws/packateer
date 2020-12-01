@@ -3,9 +3,37 @@ import puppeteer from 'puppeteer';
 import * as path from 'path';
 import * as fs from 'fs';
 
+import * as net from 'net';
+
 import Webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+
+
+const checkIfPortInUse = async (port: number): Promise<boolean> => {
+	return new Promise((res, rej) => {
+		const testServer = net.createServer().listen(port);
+		testServer.on('error', (e: any) => {
+			if (e.code != 'EADDRINUSE') {
+				rej(e)
+			} else {
+				res(true);
+			}
+		})
+		
+		testServer.on('listening', () => {
+			testServer.close();
+		});
+
+		testServer.on('connection', () => {
+			testServer.close();
+		});
+
+		testServer.on('close', () => {
+			res(false);
+		})
+	});
+};
 
 interface ServerAndPupeteerObject {
 	port: number;
@@ -21,9 +49,18 @@ export async function CreateServerAndClient(
 	entry = undefined,
 	modules = [ path.join(__dirname, '../../../node_modules') ],
 	fullySpecifiedImports = false,
-	usingTypescript = false
+	usingTypescript = false,
 ): Promise<ServerAndPupeteerObject> {
-	let port = portToListenOn || 3000 + Math.floor(Math.random() * Math.floor(1000));
+	const getRandomPortNumber = (): number => {
+		return 3000 + Math.floor(Math.random() * Math.floor(1000));
+	}
+
+	let port = portToListenOn || getRandomPortNumber();
+	let isPortInUse = await checkIfPortInUse(port);
+	while(isPortInUse) {
+		port = getRandomPortNumber();
+		isPortInUse = await checkIfPortInUse(port);
+	}
 
 	if (modules.some((m) => !fs.existsSync(m))) {
 		throw new Error(

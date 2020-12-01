@@ -1,6 +1,6 @@
 {
   "name": "packateer",
-  "version": "2.0.6",
+  "version": "2.1.0",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -8,10 +8,17 @@
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["puppeteer", "webpack", "react", "component testing", "react component testing", "test webpack puppeteer"],
+  "keywords": [
+    "puppeteer",
+    "webpack",
+    "react",
+    "component testing",
+    "react component testing",
+    "test webpack puppeteer"
+  ],
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/bebrws/packateer.git "
+    "type": "git",
+    "url": "https://github.com/bebrws/packateer.git "
   },
   "author": "Brad Barrows",
   "license": "MIT",

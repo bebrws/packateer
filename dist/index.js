@@ -69,9 +69,34 @@ exports.CreateServerAndClient = void 0;
 var puppeteer_1 = __importDefault(require("puppeteer"));
 var path = __importStar(require("path"));
 var fs = __importStar(require("fs"));
+var net = __importStar(require("net"));
 var webpack_1 = __importDefault(require("webpack"));
 var webpack_dev_server_1 = __importDefault(require("webpack-dev-server"));
 var html_webpack_plugin_1 = __importDefault(require("html-webpack-plugin"));
+var checkIfPortInUse = function (port) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/, new Promise(function (res, rej) {
+                var testServer = net.createServer().listen(port);
+                testServer.on('error', function (e) {
+                    if (e.code != 'EADDRINUSE') {
+                        rej(e);
+                    }
+                    else {
+                        res(true);
+                    }
+                });
+                testServer.on('listening', function () {
+                    testServer.close();
+                });
+                testServer.on('connection', function () {
+                    testServer.close();
+                });
+                testServer.on('close', function () {
+                    res(false);
+                });
+            })];
+    });
+}); };
 function CreateServerAndClient(portToListenOn, serverListeningCallback, browserIsHeadless, entry, modules, fullySpecifiedImports, usingTypescript) {
     if (portToListenOn === void 0) { portToListenOn = undefined; }
     if (serverListeningCallback === void 0) { serverListeningCallback = undefined; }
@@ -81,17 +106,32 @@ function CreateServerAndClient(portToListenOn, serverListeningCallback, browserI
     if (fullySpecifiedImports === void 0) { fullySpecifiedImports = false; }
     if (usingTypescript === void 0) { usingTypescript = false; }
     return __awaiter(this, void 0, void 0, function () {
-        var port, HtmlWebpackPluginConfig, typescriptModuleRules, compiler_1, server_1, page, browser, e_1;
+        var getRandomPortNumber, port, isPortInUse, HtmlWebpackPluginConfig, typescriptModuleRules, compiler_1, server_1, page, browser, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    port = portToListenOn || 3000 + Math.floor(Math.random() * Math.floor(1000));
-                    if (!modules.some(function (m) { return !fs.existsSync(m); })) return [3 /*break*/, 1];
-                    throw new Error("The modules property contains a path which does not exist. This may happen if for exammple this package is npm linked and the modules array is not updated.");
+                    getRandomPortNumber = function () {
+                        return 3000 + Math.floor(Math.random() * Math.floor(1000));
+                    };
+                    port = portToListenOn || getRandomPortNumber();
+                    return [4 /*yield*/, checkIfPortInUse(port)];
                 case 1:
-                    if (!!entry) return [3 /*break*/, 2];
-                    throw new Error("Please provide a file to be used as the entry point for the test. This may be a file containing a call to ReactDom.render.");
+                    isPortInUse = _a.sent();
+                    _a.label = 2;
                 case 2:
+                    if (!isPortInUse) return [3 /*break*/, 4];
+                    port = getRandomPortNumber();
+                    return [4 /*yield*/, checkIfPortInUse(port)];
+                case 3:
+                    isPortInUse = _a.sent();
+                    return [3 /*break*/, 2];
+                case 4:
+                    if (!modules.some(function (m) { return !fs.existsSync(m); })) return [3 /*break*/, 5];
+                    throw new Error("The modules property contains a path which does not exist. This may happen if for exammple this package is npm linked and the modules array is not updated.");
+                case 5:
+                    if (!!entry) return [3 /*break*/, 6];
+                    throw new Error("Please provide a file to be used as the entry point for the test. This may be a file containing a call to ReactDom.render.");
+                case 6:
                     HtmlWebpackPluginConfig = new html_webpack_plugin_1.default({
                         template: path.join(__dirname, '../client/index.html'),
                         filename: 'index.html',
@@ -218,28 +258,28 @@ function CreateServerAndClient(portToListenOn, serverListeningCallback, browserI
                                 }
                             });
                         })];
-                case 3:
+                case 7:
                     _a.sent();
                     page = null;
                     return [4 /*yield*/, puppeteer_1.default.launch({ headless: Boolean(browserIsHeadless) })];
-                case 4:
-                    browser = _a.sent();
-                    if (!browser) return [3 /*break*/, 9];
-                    return [4 /*yield*/, browser.newPage()];
-                case 5:
-                    page = _a.sent();
-                    _a.label = 6;
-                case 6:
-                    _a.trys.push([6, 8, , 9]);
-                    return [4 /*yield*/, page.goto("http://localhost:" + port)];
-                case 7:
-                    _a.sent();
-                    return [3 /*break*/, 9];
                 case 8:
+                    browser = _a.sent();
+                    if (!browser) return [3 /*break*/, 13];
+                    return [4 /*yield*/, browser.newPage()];
+                case 9:
+                    page = _a.sent();
+                    _a.label = 10;
+                case 10:
+                    _a.trys.push([10, 12, , 13]);
+                    return [4 /*yield*/, page.goto("http://localhost:" + port)];
+                case 11:
+                    _a.sent();
+                    return [3 /*break*/, 13];
+                case 12:
                     e_1 = _a.sent();
                     console.error("Unable to use Puppetter page to goto URL for WebPackServer.");
                     throw e_1;
-                case 9: return [2 /*return*/, { port: port, server: server_1, browser: browser, page: page }];
+                case 13: return [2 /*return*/, { port: port, server: server_1, browser: browser, page: page }];
             }
         });
     });
