@@ -71,8 +71,8 @@ describe('test with pup', () => {
   })
   
   afterAll(() => {
-    pbrowser.close();
-    pserver.close();
+    pbrowser && pbrowser.close();
+    pserver && pserver.close();
   })
 
   test('renders learn react link', async () => {
