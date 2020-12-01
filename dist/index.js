@@ -97,9 +97,8 @@ var checkIfPortInUse = function (port) { return __awaiter(void 0, void 0, void 0
             })];
     });
 }); };
-function CreateServerAndClient(portToListenOn, serverListeningCallback, browserIsHeadless, entry, modules, fullySpecifiedImports, usingTypescript) {
+function CreateServerAndClient(portToListenOn, browserIsHeadless, entry, modules, fullySpecifiedImports, usingTypescript) {
     if (portToListenOn === void 0) { portToListenOn = undefined; }
-    if (serverListeningCallback === void 0) { serverListeningCallback = undefined; }
     if (browserIsHeadless === void 0) { browserIsHeadless = true; }
     if (entry === void 0) { entry = undefined; }
     if (modules === void 0) { modules = [path.join(__dirname, '../../../node_modules')]; }
@@ -140,7 +139,7 @@ function CreateServerAndClient(portToListenOn, serverListeningCallback, browserI
                     typescriptModuleRules = [
                         {
                             test: /\.ts$/,
-                            resolve: { fullySpecified: false },
+                            resolve: { fullySpecified: fullySpecifiedImports },
                             use: [
                                 {
                                     loader: 'babel-loader',
@@ -166,7 +165,7 @@ function CreateServerAndClient(portToListenOn, serverListeningCallback, browserI
                         },
                         {
                             test: /\.tsx$/,
-                            resolve: { fullySpecified: false },
+                            resolve: { fullySpecified: fullySpecifiedImports },
                             use: [
                                 {
                                     loader: 'babel-loader',
@@ -205,7 +204,7 @@ function CreateServerAndClient(portToListenOn, serverListeningCallback, browserI
                             rules: __spreadArrays((usingTypescript ? typescriptModuleRules : []), [
                                 {
                                     test: /\.js$/,
-                                    resolve: { fullySpecified: false },
+                                    resolve: { fullySpecified: fullySpecifiedImports },
                                     loader: 'babel-loader',
                                     options: {
                                         presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic' }]],
@@ -214,7 +213,7 @@ function CreateServerAndClient(portToListenOn, serverListeningCallback, browserI
                                 },
                                 {
                                     test: /\.jsx$/,
-                                    resolve: { fullySpecified: false },
+                                    resolve: { fullySpecified: fullySpecifiedImports },
                                     loader: 'babel-loader',
                                     options: {
                                         presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic' }]],

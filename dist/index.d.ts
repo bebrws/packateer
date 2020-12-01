@@ -6,6 +6,6 @@ interface ServerAndPupeteerObject {
     browser: puppeteer.Browser | null;
     page: puppeteer.Page | null;
 }
-export declare function CreateServerAndClient(portToListenOn?: undefined, serverListeningCallback?: undefined, browserIsHeadless?: boolean, entry?: undefined, modules?: string[], fullySpecifiedImports?: boolean, usingTypescript?: boolean): Promise<ServerAndPupeteerObject>;
+export declare function CreateServerAndClient(portToListenOn?: undefined, browserIsHeadless?: boolean, entry?: undefined, modules?: string[], fullySpecifiedImports?: boolean, usingTypescript?: boolean): Promise<ServerAndPupeteerObject>;
 export {};
 //# sourceMappingURL=index.d.ts.map
