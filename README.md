@@ -3,33 +3,22 @@
 
 # What is this?
 
-This is a library which will take a filename (the entry argument) which should point to a page you have designed for testing.
-Then use webpack to compile that JSX/TSX file using WebpackDevServer. After compilation and hosting a puppeteer browser is created launching a headless Chrome instance and the page you provided in the initial step is loaded for testing with Jest or whatever testing library you prefer.
+It provides a function that requires a file (usually a JSX or TSX file) as input for a WebpackDevServer instance to host after transpiling and compilation. Puppeteer is used to manage the browser which is directed to the url of this Webpack server. The Puppeteer and WebpackDevServer instances created in this process are returned along with the port used by this server.
 
-This is useful when you need to test interaction with React components that cannot be tested with available virtual DOM options. One such example is [shown below](#example): testing tabIndex.
+One use case would be the need or preference to test against a browser as an alternative to other options.
 
-# Why is this useful?
+# Possible Use Cases
+## Testing Tab Ordering
 
-Say you have a or a few React components that you need to test some user interaction with. Say Drag-n-drop or tab ordering. Then this is a library you may want to give a look.
+An example is provided in the example_usage folder and [listed below](#example-usage)
 
-It allows you to craft a new tsx or jsx file with these components in whichever way you want and then use puppeteer to (and whichever test tool, say Jest) you want to test away.
+You can take one or more components ( [App.js](#appjs) contains one for this example )
 
-# Example
-You can check the example_usage folder for an Example or click here [to see a full example in the README](#example-usage)
+Then organize these components in the [entry point](#appsubpagejsx) file which which is given to the WebpackDevServer in the [test](#apptestjs).
 
-# Explain the Example
-You can take a component: [App.js For example](#appjs)
+In the example the tab ordering is tested.
 
-Create a file where you get to [layout one or more](#appsubpagejsx) components. The point of this package is to allow you to create these "pages" or "subsections of sites" that contain components you want to test and only those components. Why write a test that has to login and navigate around your site just to test a specific component when you couuld layout a few components in a new page and test only those components?
-
-In the example below I am testing that pressing tab while viewing the page will traverse the HTML DIV elements as expected. The test starts by selecting the DIV with the id "initial". Then tabs down the DIV with the id "second".
-
-This is an example of testing where I found virtual doms to fall short. Also, if time is not an issue with testing woudln't it be just that much better to test in a real browser?
-
-If you have headless set to false then you can see the browser tab between DIVs in the example:
-![Packateer Example Video](https://github.com/bebrws/packateer/raw/master/packateer.gif "Packateer Example Video")
-# Example Usage
-
+![Browser tabbing through DIV elements](https://github.com/bebrws/packateer/raw/master/packateer.gif)
 ### App.test.js
 
 ```
@@ -154,5 +143,3 @@ function App() {
 
 export default App;
 ```
-
-I will include this test project in the test folder of this package to show how this can be used.
