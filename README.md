@@ -14,7 +14,7 @@ An example is provided in the example_usage folder and [listed below](#example-u
 
 You can take one or more components ( [App.js](#appjs) contains one for this example )
 
-Then organize these components in the [entry point](#appsubpagejsx) file which which is given to the WebpackDevServer in the [test](#apptestjs).
+Then organize these components in the [entry point](#appsubpagejsx) file. This is passed as an argument to the WebpackDevServer.=.
 
 In the example the tab ordering is tested.
 
